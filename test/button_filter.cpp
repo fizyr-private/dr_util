@@ -1,70 +1,67 @@
+// Catch
+#include <catch2/catch.hpp>
+
+// This repository
 #include "button_filter.hpp"
-
-#include <gtest/gtest.h>
-
-int main(int argc, char ** argv) {
-	testing::InitGoogleTest(&argc, argv);
-	return RUN_ALL_TESTS();
-}
 
 namespace dr {
 
-TEST(ButtonFilterTest, filterAlwaysHigh) {
+TEST_CASE("ButtonFilterTest -- filterAlwaysHigh", "filterAlwaysHigh") {
 	ButtonFilter bf(true, false);
 
 	// pass through high signals always
-	EXPECT_FALSE(bf.filter(false));
-	EXPECT_TRUE(bf.filter(true));
-	EXPECT_TRUE(bf.filter(true));
+	REQUIRE(bf.filter(false) == false);
+	REQUIRE(bf.filter(true)  == true);
+	REQUIRE(bf.filter(true)  == true);
 }
 
-TEST(ButtonFilterTest, filterAlwaysLow) {
+TEST_CASE("ButtonFilterTest -- filterAlwaysLow", "filterAlwaysLow") {
 	ButtonFilter bf(false, true);
 
 	// pass through low signals always
-	EXPECT_TRUE(bf.filter(false));
-	EXPECT_TRUE(bf.filter(true));
-	EXPECT_FALSE(bf.filter(true));
+	REQUIRE(bf.filter(false) == true);
+	REQUIRE(bf.filter(true)  == true);
+	REQUIRE(bf.filter(true)  == false);
 }
 
-TEST(ButtonFilterTest, filterAlwaysHighAndLow) {
+TEST_CASE("ButtonFilterTest -- filterAlwaysHighAndLow", "filterAlwaysHighAndLow") {
 	ButtonFilter bf(true, true);
 
 	// pass through any signal
-	EXPECT_TRUE(bf.filter(false));
-	EXPECT_TRUE(bf.filter(false));
-	EXPECT_TRUE(bf.filter(true));
-	EXPECT_TRUE(bf.filter(true));
+	REQUIRE(bf.filter(false) == true);
+	REQUIRE(bf.filter(false) == true);
+	REQUIRE(bf.filter(true)  == true);
+	REQUIRE(bf.filter(true)  == true);
 }
 
-TEST(ButtonFilterTest, filterRisingEdge) {
+TEST_CASE("ButtonFilterTest -- filterRisingEdge", "filterRisingEdge") {
 	ButtonFilter bf;
 
 	// test rising edge
-	EXPECT_FALSE(bf.filter(false));
-	EXPECT_TRUE(bf.filter(true));
+	REQUIRE(bf.filter(false) == false);
+	REQUIRE(bf.filter(true)  == true);
 }
 
-TEST(ButtonFilterTest, filterFallingEdge) {
+TEST_CASE("ButtonFilterTest -- filterFallingEdge", "filterFallingEdge") {
 	ButtonFilter bf;
 
 	// test falling edge
-	EXPECT_TRUE(bf.filter(true));
-	EXPECT_TRUE(bf.filter(false));
+	REQUIRE(bf.filter(true)  == true);
+	REQUIRE(bf.filter(false) == true);
 }
 
-TEST(ButtonFilterTest, filterMultiple) {
+TEST_CASE("ButtonFilterTest -- filterMultiple", "filterMultiple") {
 	ButtonFilter bf;
 
 	// test multiple signals
-	EXPECT_TRUE(bf.filter(true));
-	EXPECT_FALSE(bf.filter(true));
+	REQUIRE(bf.filter(true) == true);
+	REQUIRE(bf.filter(true) == false);
 
-	EXPECT_TRUE(bf.filter(false));
-	EXPECT_FALSE(bf.filter(false));
+	REQUIRE(bf.filter(false) == true);
+	REQUIRE(bf.filter(false) == false);
 
-	EXPECT_TRUE(bf.filter(true));
-	EXPECT_FALSE(bf.filter(true));
+	REQUIRE(bf.filter(true) == true);
+	REQUIRE(bf.filter(true) == false);
 }
 
 }

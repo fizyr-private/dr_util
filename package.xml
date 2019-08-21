@@ -10,4 +10,8 @@
 
 	<buildtool_depend>catkin</buildtool_depend>
 	<depend>boost</depend>
+	<depend>dr_ros</depend>	
+    <depend>roscpp</depend>
+	<depend>roslib</depend>
+	<test_depend>catch2</test_depend>
 </package>

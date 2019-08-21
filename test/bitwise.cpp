@@ -1,80 +1,79 @@
+// Catch
+#include <catch2/catch.hpp>
+
+// This repository
 #include "bitwise.hpp"
-
-#include <gtest/gtest.h>
-
-int main(int argc, char ** argv) {
-	testing::InitGoogleTest(&argc, argv);
-	return RUN_ALL_TESTS();
-}
 
 namespace dr {
 
-TEST(BitwiseTest, makeBitMask) {
+TEST_CASE("BitwiseTest -- makeBitMask", "makeBitMask") {
 	// least significant bit
-	EXPECT_EQ(0x1u,        bitMask(0));
+	REQUIRE(       0x1u == bitMask(0));
+
 	// some middle bit
-	EXPECT_EQ(0x4000u,     bitMask(14));
+	REQUIRE(    0x4000u == bitMask(14));
+
 	// most significant bit
-	EXPECT_EQ(0x80000000u, bitMask(31));
+	REQUIRE(0x80000000u == bitMask(31));
 }
 
-TEST(BitwiseTest, testTestBit) {
+TEST_CASE("BitwiseTest -- testTestBit", "testTestBit") {
 	// least significant bit
-	EXPECT_TRUE(testBit(0x1, 0));
-	EXPECT_FALSE(testBit(0x1, 14));
-	EXPECT_FALSE(testBit(0x1, 31));
+	REQUIRE(testBit(0x1, 0)  == true);
+	REQUIRE(testBit(0x1, 14) == false);
+	REQUIRE(testBit(0x1, 31) == false);
 
 	// some middle bit
-	EXPECT_FALSE(testBit(0x4000, 0));
-	EXPECT_TRUE(testBit(0x4000, 14));
-	EXPECT_FALSE(testBit(0x4000, 31));
+	REQUIRE(testBit(0x4000, 0)  == false);
+	REQUIRE(testBit(0x4000, 14) == true);
+	REQUIRE(testBit(0x4000, 31) == false);
 
 	// most significant bit
-	EXPECT_FALSE(testBit(0x80000000, 0));
-	EXPECT_FALSE(testBit(0x80000000, 14));
-	EXPECT_TRUE(testBit(0x80000000, 31));
+	REQUIRE(testBit(0x80000000, 0)  == false);
+	REQUIRE(testBit(0x80000000, 14) == false);
+	REQUIRE(testBit(0x80000000, 31) == true);
 
 	// no value
-	EXPECT_FALSE(testBit(0, 0));
-	EXPECT_FALSE(testBit(0, 14));
-	EXPECT_FALSE(testBit(0, 31));
+	REQUIRE(testBit(0, 0)  == false);
+	REQUIRE(testBit(0, 14) == false);
+	REQUIRE(testBit(0, 31) == false);
 
 	// all bits set to true
-	EXPECT_TRUE(testBit(0xFFFFFFFF, 0));
-	EXPECT_TRUE(testBit(0xFFFFFFFF, 14));
-	EXPECT_TRUE(testBit(0xFFFFFFFF, 31));
+	REQUIRE(testBit(0xFFFFFFFF, 0)  == true);
+	REQUIRE(testBit(0xFFFFFFFF, 14) == true);
+	REQUIRE(testBit(0xFFFFFFFF, 31) == true);
 }
 
-TEST(BitwiseTest, testTestRising) {
+TEST_CASE("BitwiseTest -- testTestRising", "testTestRising") {
 	// no change for all bits set to 1
-	EXPECT_FALSE(testRising(0xFFFFFFFF, 0xFFFFFFFF, 0));
-	EXPECT_FALSE(testRising(0xFFFFFFFF, 0xFFFFFFFF, 14));
-	EXPECT_FALSE(testRising(0xFFFFFFFF, 0xFFFFFFFF, 31));
+	REQUIRE(testRising(0xFFFFFFFF, 0xFFFFFFFF, 0)  == false);
+	REQUIRE(testRising(0xFFFFFFFF, 0xFFFFFFFF, 14) == false);
+	REQUIRE(testRising(0xFFFFFFFF, 0xFFFFFFFF, 31) == false);
 
 	// no change for all bits set to 0
-	EXPECT_FALSE(testRising(0, 0, 0));
-	EXPECT_FALSE(testRising(0, 0, 14));
-	EXPECT_FALSE(testRising(0, 0, 31));
+	REQUIRE(testRising(0, 0, 0)  == false);
+	REQUIRE(testRising(0, 0, 14) == false);
+	REQUIRE(testRising(0, 0, 31) == false);
 
 	// ignore falling value
-	EXPECT_TRUE(testRising(0xFFFFFFFF, 0, 0));
-	EXPECT_TRUE(testRising(0xFFFFFFFF, 0, 14));
-	EXPECT_TRUE(testRising(0xFFFFFFFF, 0, 31));
+	REQUIRE(testRising(0xFFFFFFFF, 0, 0)  == true);
+	REQUIRE(testRising(0xFFFFFFFF, 0, 14) == true);
+	REQUIRE(testRising(0xFFFFFFFF, 0, 31) == true);
 
 	// test rising edge
-	EXPECT_FALSE(testRising(0, 0xFFFFFFFF, 0));
-	EXPECT_FALSE(testRising(0, 0xFFFFFFFF, 14));
-	EXPECT_FALSE(testRising(0, 0xFFFFFFFF, 31));
+	REQUIRE(testRising(0, 0xFFFFFFFF, 0)  == false);
+	REQUIRE(testRising(0, 0xFFFFFFFF, 14) == false);
+	REQUIRE(testRising(0, 0xFFFFFFFF, 31) == false);
 
 	// test specific rising edge
-	EXPECT_TRUE(testRising(0x1, 0, 0));
-	EXPECT_TRUE(testRising(0x4000, 0, 14));
-	EXPECT_TRUE(testRising(0x80000000, 0, 31));
+	REQUIRE(testRising(0x1, 0, 0)         == true);
+	REQUIRE(testRising(0x4000, 0, 14)     == true);
+	REQUIRE(testRising(0x80000000, 0, 31) == true);
 
 	// test wrong rising edge
-	EXPECT_FALSE(testRising(0x2, 0, 0));
-	EXPECT_FALSE(testRising(0x8000, 0, 14));
-	EXPECT_FALSE(testRising(0x40000000, 0, 31));
+	REQUIRE(testRising(0x2, 0, 0)         == false);
+	REQUIRE(testRising(0x8000, 0, 14)     == false);
+	REQUIRE(testRising(0x40000000, 0, 31) == false);
 }
 
 }
