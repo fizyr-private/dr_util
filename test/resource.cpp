@@ -10,8 +10,8 @@
 #include <iostream>
 
 TEST_CASE("ResourceTest -- packageUrl", "packageUrl") {
-	std::cout << ros::package::getPath("dr_util") << "\n";
-	REQUIRE(ros::package::getPath("dr_util") + "/test.file" == dr::resolveResourceUrl("package://dr_util/test.file"));
+	std::cout << ros::package::getPath("dr_ros") << "\n";
+	REQUIRE(ros::package::getPath("dr_ros") + "/test.file" == dr::resolveResourceUrl("package://dr_ros/test.file"));
 }
 
 TEST_CASE("ResourceTest -- localFileUrl", "localFileUrl") {

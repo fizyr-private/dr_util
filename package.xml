@@ -14,5 +14,5 @@
 	<depend>roscpp</depend>
 	<depend>roslib</depend>
 	<test_depend>catch2</test_depend>
-	<test_depend>dr_util</test_depend>
+	<test_depend>dr_ros</test_depend>
 </package>
