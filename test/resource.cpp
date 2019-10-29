@@ -21,7 +21,8 @@ TEST_CASE("ResourceTest") {
 		std::string second;
 
 		try {
-			second = dr::resolveResourceUrl("package://dr_log/test.file");
+			// second = dr::resolveResourceUrl("package://dr_log/test.file");
+			second = dr::resolveResourceUrl("anything://dr_log/test.file");
 		} catch (std::exception & e){
 			std::cout << "exception:" << e.what() << "\n";
 		}
