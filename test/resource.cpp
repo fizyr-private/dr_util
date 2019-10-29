@@ -13,8 +13,15 @@
 TEST_CASE("ResourceTest") {
 	
 	SECTION("packageUrl") {
-		std::string first = ros::package::getPath("dr_ros") + "/test.file" ;
-		std::string second = dr::resolveResourceUrl("package://dr_ros/test.file");
+		// std::string first = ros::package::getPath("dr_ros") + "/test.file" ;
+		std::string first = ros::package::getPath("dr_log") + "/test.file" ;
+		// std::string second = dr::resolveResourceUrl("package://dr_ros/test.file");
+		std::string second = dr::resolveResourceUrl("package://dr_log/test.file");
+		// std::string second = dr::resolveResourceUrl("package://boost/test.file");
+
+		std::cout << "first:" << first << "\n";
+		std::cout << "second:" << second << "\n";
+
 		REQUIRE(first == second);
 	}
 
