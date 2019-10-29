@@ -9,7 +9,7 @@ add_compile_options(-Wall -Wextra -Wpedantic -Werror)
 
 find_package(catkin REQUIRED COMPONENTS
 	dr_ros
-	roslib	
+	roslib
 )
 
 find_package(Boost REQUIRED COMPONENTS filesystem date_time)
