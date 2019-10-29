@@ -1,11 +1,11 @@
-// C
-#include <stdlib.h>
+// This repository
+#include "environment.hpp"
 
 // Catch
 #include <catch2/catch.hpp>
 
-// This repository
-#include "environment.hpp"
+// C
+#include <stdlib.h>
 
 namespace dr {
 

@@ -1,67 +1,70 @@
-// Catch
-#include <catch2/catch.hpp>
-
 // This repository
 #include "button_filter.hpp"
 
+// Catch
+#include <catch2/catch.hpp>
+
 namespace dr {
 
-TEST_CASE("ButtonFilterTest -- filterAlwaysHigh", "filterAlwaysHigh") {
-	ButtonFilter bf(true, false);
+TEST_CASE("ButtonFilterTest") {
 
-	// pass through high signals always
-	REQUIRE(bf.filter(false) == false);
-	REQUIRE(bf.filter(true)  == true);
-	REQUIRE(bf.filter(true)  == true);
-}
+	SECTION("filterAlwaysHigh") {
+		ButtonFilter bf(true, false);
 
-TEST_CASE("ButtonFilterTest -- filterAlwaysLow", "filterAlwaysLow") {
-	ButtonFilter bf(false, true);
+		// pass through high signals always
+		REQUIRE(bf.filter(false) == false);
+		REQUIRE(bf.filter(true)  == true);
+		REQUIRE(bf.filter(true)  == true);
+	}
 
-	// pass through low signals always
-	REQUIRE(bf.filter(false) == true);
-	REQUIRE(bf.filter(true)  == true);
-	REQUIRE(bf.filter(true)  == false);
-}
+	SECTION("filterAlwaysLow") {
+		ButtonFilter bf(false, true);
 
-TEST_CASE("ButtonFilterTest -- filterAlwaysHighAndLow", "filterAlwaysHighAndLow") {
-	ButtonFilter bf(true, true);
+		// pass through low signals always
+		REQUIRE(bf.filter(false) == true);
+		REQUIRE(bf.filter(true)  == true);
+		REQUIRE(bf.filter(true)  == false);
+	}
 
-	// pass through any signal
-	REQUIRE(bf.filter(false) == true);
-	REQUIRE(bf.filter(false) == true);
-	REQUIRE(bf.filter(true)  == true);
-	REQUIRE(bf.filter(true)  == true);
-}
+	SECTION("filterAlwaysHighAndLow") {
+		ButtonFilter bf(true, true);
 
-TEST_CASE("ButtonFilterTest -- filterRisingEdge", "filterRisingEdge") {
-	ButtonFilter bf;
+		// pass through any signal
+		REQUIRE(bf.filter(false) == true);
+		REQUIRE(bf.filter(false) == true);
+		REQUIRE(bf.filter(true)  == true);
+		REQUIRE(bf.filter(true)  == true);
+	}
 
-	// test rising edge
-	REQUIRE(bf.filter(false) == false);
-	REQUIRE(bf.filter(true)  == true);
-}
+	SECTION("filterRisingEdge") {
+		ButtonFilter bf;
 
-TEST_CASE("ButtonFilterTest -- filterFallingEdge", "filterFallingEdge") {
-	ButtonFilter bf;
+		// test rising edge
+		REQUIRE(bf.filter(false) == false);
+		REQUIRE(bf.filter(true)  == true);
+	}
 
-	// test falling edge
-	REQUIRE(bf.filter(true)  == true);
-	REQUIRE(bf.filter(false) == true);
-}
+	SECTION("filterFallingEdge") {
+		ButtonFilter bf;
 
-TEST_CASE("ButtonFilterTest -- filterMultiple", "filterMultiple") {
-	ButtonFilter bf;
+		// test falling edge
+		REQUIRE(bf.filter(true)  == true);
+		REQUIRE(bf.filter(false) == true);
+	}
 
-	// test multiple signals
-	REQUIRE(bf.filter(true) == true);
-	REQUIRE(bf.filter(true) == false);
+	SECTION("filterMultiple") {
+		ButtonFilter bf;
 
-	REQUIRE(bf.filter(false) == true);
-	REQUIRE(bf.filter(false) == false);
+		// test multiple signals
+		REQUIRE(bf.filter(true) == true);
+		REQUIRE(bf.filter(true) == false);
 
-	REQUIRE(bf.filter(true) == true);
-	REQUIRE(bf.filter(true) == false);
+		REQUIRE(bf.filter(false) == true);
+		REQUIRE(bf.filter(false) == false);
+
+		REQUIRE(bf.filter(true) == true);
+		REQUIRE(bf.filter(true) == false);
+	}
 }
 
 }
