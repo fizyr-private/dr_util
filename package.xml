@@ -18,4 +18,5 @@
 	
 	<test_depend>catch2</test_depend>
 	<test_depend>dr_ros</test_depend>
+	<test_depend>dr_log</test_depend>	
 </package>
