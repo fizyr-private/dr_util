@@ -7,52 +7,21 @@
 // ROS
 #include <ros/package.h>
 
-// C++
-#include <iostream>
-#include <exception>
-
-namespace {
-
-	std::string exec(const char * cmd) {
-		std::array<char, 128> buffer;
-		std::string result;
-		std::unique_ptr<FILE, decltype(&pclose)> pipe(popen(cmd, "r"), pclose);
-		if (!pipe) {
-			throw std::runtime_error("popen() failed!");
-		}
-		while (fgets(buffer.data(), buffer.size(), pipe.get()) != nullptr) {
-			result += buffer.data();
-		}
-		return result;
-	}
-}
-
-
 TEST_CASE("ResourceTest") {
 	
 	SECTION("packageUrl") {
-
-		std::cout << "find result:" << exec("find / -name rospack") << "\n";
-		std::cout << "value of PATH:" << exec("echo $PATH") << "\n";
-
-		// std::string first = ros::package::getPath("dr_ros") + "/test.file" ;
-		std::string first = ros::package::getPath("dr_log") + "/test.file" ;
-		// std::string second = dr::resolveResourceUrl("package://dr_ros/test.file");
-
-		std::string second;
-
-		try {
-			// second = dr::resolveResourceUrl("package://dr_log/test.file");
-			second = dr::resolveResourceUrl("anything://dr_log/test.file");
-		} catch (std::exception & e){
-			std::cout << "exception:" << e.what() << "\n";
-		}
-		// std::string second = dr::resolveResourceUrl("package://boost/test.file");
-
-		std::cout << "first:" << first << "\n";
-		std::cout << "second:" << second << "\n";
-
-		REQUIRE(first == second);
+		/**
+		 * TODO: This test fails in BuildBot because it can not resolve the location
+		 *       of the "package://some_package". At the end of a chain of calls,
+		 *       'ROSPack::run(..)' excecutes "rospack find some_package".
+		 * 
+		 *       More about this method.
+		 *       http://docs.ros.org/indigo/api/rospack/html/rospack__backcompat_8cpp_source.html		 * 
+		 * 
+		 *       This method succeeds if rospack is installed and located in the PATH.
+		 *       In BuildBot test-container rospack is installed, but its location is not in the PATH.
+		 **/
+		REQUIRE(ros::package::getPath("dr_util") + "/test.file" == dr::resolveResourceUrl("package://dr_util/test.file"));
 	}
 
 	SECTION("localFileUrl") {
