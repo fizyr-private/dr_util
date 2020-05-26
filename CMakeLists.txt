@@ -6,6 +6,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
 add_compile_options(-Wall -Wextra -Wpedantic -Werror)
+add_link_options(LINKER:--as-needed)
 
 find_package(catkin REQUIRED)
 find_package(Boost REQUIRED COMPONENTS filesystem date_time)
