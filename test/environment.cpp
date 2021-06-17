@@ -1,22 +1,23 @@
+// This repository
 #include "environment.hpp"
 
-#include <stdlib.h>
-#include <gtest/gtest.h>
+// Catch
+#include <catch2/catch.hpp>
 
-int main(int argc, char ** argv) {
-	testing::InitGoogleTest(&argc, argv);
-	return RUN_ALL_TESTS();
-}
+// C
+#include <stdlib.h>
 
 namespace dr {
 
-TEST(Environment, getEnvironment) {
+TEST_CASE("Environment -- getEnvironment", "getEnvironment") {
 	::clearenv();
-	EXPECT_EQ(getEnvironment(), (std::map<std::string, std::string>{}));
+	REQUIRE(getEnvironment() == (std::map<std::string, std::string>{}));
+
 	::setenv("FOO", "aap", true);
-	EXPECT_EQ(getEnvironment(), (std::map<std::string, std::string>{{"FOO", "aap"}}));
+	REQUIRE(getEnvironment() == (std::map<std::string, std::string>{{"FOO", "aap"}}));
+	
 	::setenv("BAR", "noot", true);
-	EXPECT_EQ(getEnvironment(), (std::map<std::string, std::string>{{"FOO", "aap"}, {"BAR", "noot"}}));
+	REQUIRE(getEnvironment() == (std::map<std::string, std::string>{{"FOO", "aap"}, {"BAR", "noot"}}));
 }
 
 }

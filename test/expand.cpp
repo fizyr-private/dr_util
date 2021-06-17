@@ -1,34 +1,34 @@
+// This repository
 #include "expand.hpp"
 
-#include <gtest/gtest.h>
-
-int main(int argc, char ** argv) {
-	testing::InitGoogleTest(&argc, argv);
-	return RUN_ALL_TESTS();
-}
+// Catch
+#include <catch2/catch.hpp>
 
 namespace dr {
 
-TEST(Expand, simple) {
-	EXPECT_EQ(expandVariables("$test", {{"test", "foo"}}), "foo");
-	EXPECT_EQ(expandVariables("$test", {{"test", "bar"}}), "bar");
-	EXPECT_EQ(expandVariables("${test}", {{"test", "foo"}}), "foo");
-	EXPECT_EQ(expandVariables("${test}", {{"test", "bar"}}), "bar");
-}
+TEST_CASE("Expand") {
 
-TEST(Expand, sentence) {
-	EXPECT_EQ(expandVariables("Hello $name, welcome to $place", {{"name", "Rick"}, {"place", "Earth"}}), "Hello Rick, welcome to Earth");
-	EXPECT_EQ(expandVariables("Hello ${name}, welcome to ${place}", {{"name", "Rick"}, {"place", "Earth"}}), "Hello Rick, welcome to Earth");
-}
+	SECTION("simple") {
+		REQUIRE(expandVariables("$test", {{"test", "foo"}})   == "foo");
+		REQUIRE(expandVariables("$test", {{"test", "bar"}})   == "bar");
+		REQUIRE(expandVariables("${test}", {{"test", "foo"}}) == "foo");
+		REQUIRE(expandVariables("${test}", {{"test", "bar"}}) == "bar");
+	}
 
-TEST(Expand, nipple_brackets) {
-	EXPECT_EQ(expandVariables("test$testtest", {{"test", "wrong"}, {"testtest", "good"}}), "testgood");
-	EXPECT_EQ(expandVariables("test${test}test", {{"test", "good"}, {"testtest", "wrong"}}), "testgoodtest");
-}
+	SECTION("sentence") {
+		REQUIRE(expandVariables("Hello $name, welcome to $place", {{"name", "Rick"}, {"place", "Earth"}})     == "Hello Rick, welcome to Earth");
+		REQUIRE(expandVariables("Hello ${name}, welcome to ${place}", {{"name", "Rick"}, {"place", "Earth"}}) == "Hello Rick, welcome to Earth");
+	}
 
-TEST(Expand, ignore_empty_key) {
-	EXPECT_EQ(expandVariables("$", {{"", "aap"}}), "$");
-	EXPECT_EQ(expandVariables("${}", {{"", "aap"}}), "${}");
+	SECTION("nipple_brackets") {
+		REQUIRE(expandVariables("test$testtest", {{"test", "wrong"}, {"testtest", "good"}})   == "testgood");
+		REQUIRE(expandVariables("test${test}test", {{"test", "good"}, {"testtest", "wrong"}}) == "testgoodtest");
+	}
+
+	SECTION("ignore_empty_key") {
+		REQUIRE(expandVariables("$", {{"", "aap"}})   == "$");
+		REQUIRE(expandVariables("${}", {{"", "aap"}}) == "${}");
+	}
 }
 
 }

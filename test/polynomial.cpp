@@ -1,82 +1,86 @@
+// This repository
 #include "polynomial.hpp"
 
-#include <gtest/gtest.h>
+// Catch2
+#include <catch2/catch.hpp>
 
+// C++
 #include <cmath>
 
-int main(int argc, char ** argv) {
-	testing::InitGoogleTest(&argc, argv);
-	return RUN_ALL_TESTS();
+namespace {
+	void requireEqual(float const & a, float const & b)	{
+		REQUIRE_THAT(a, Catch::WithinULP(b, 0));
+	}
 }
 
-namespace dr {
+TEST_CASE("PolynomialTest") {
+	
+	SECTION("emptyPolynomial") {
+		dr::Polynomial p;
+		requireEqual(0, p.y(0.0));
+		requireEqual(0, p.y(0.5));
+		requireEqual(0, p.y(1.0));
+		requireEqual(0, p.y(-0.5));
+		requireEqual(0, p.y(-1.0));
+	}
 
-TEST(PolynomialTest, emptyPolynomial) {
-	Polynomial p;
-	ASSERT_DOUBLE_EQ(0, p.y(0.0));
-	ASSERT_DOUBLE_EQ(0, p.y(0.5));
-	ASSERT_DOUBLE_EQ(0, p.y(1.0));
-	ASSERT_DOUBLE_EQ(0, p.y(-0.5));
-	ASSERT_DOUBLE_EQ(0, p.y(-1.0));
-}
+	SECTION("constantPolynomial") {
+		dr::Polynomial p;
+		p.terms.emplace_back(3.25, 0);
 
-TEST(PolynomialTest, constantPolynomial) {
-	Polynomial p;
-	p.terms.emplace_back(3.25, 0);
+		requireEqual(3.25, p.y( 0.0));
+		requireEqual(3.25, p.y( 0.5));
+		requireEqual(3.25, p.y( 1.0));
+		requireEqual(3.25, p.y(-0.5));
+		requireEqual(3.25, p.y(-1.0));
+	}
 
-	ASSERT_DOUBLE_EQ(3.25, p.y( 0.0));
-	ASSERT_DOUBLE_EQ(3.25, p.y( 0.5));
-	ASSERT_DOUBLE_EQ(3.25, p.y( 1.0));
-	ASSERT_DOUBLE_EQ(3.25, p.y(-0.5));
-	ASSERT_DOUBLE_EQ(3.25, p.y(-1.0));
-}
+	SECTION("squareRoot") {
+		dr::Polynomial p;
+		p.terms.emplace_back(1, 0.5);
 
-TEST(PolynomialTest, squareRoot) {
-	Polynomial p;
-	p.terms.emplace_back(1, 0.5);
+		requireEqual( 0.000, p.y(0.0));
+		requireEqual( 1.000, p.y(1.0));
+		requireEqual( 2.000, p.y(4.0));
 
-	ASSERT_DOUBLE_EQ( 0.000, p.y(0.0));
-	ASSERT_DOUBLE_EQ( 1.000, p.y(1.0));
-	ASSERT_DOUBLE_EQ( 2.000, p.y(4.0));
+		REQUIRE(std::isnan(p.y(-1.0)) == true);
+		REQUIRE(std::isnan(p.y(-4.0)) == true);
+	}
 
-	ASSERT_TRUE(std::isnan(p.y(-1.0)));
-	ASSERT_TRUE(std::isnan(p.y(-4.0)));
-}
+	SECTION("firstOrder") {
+		dr::Polynomial p;
+		p.terms.emplace_back(2, 1);
 
-TEST(PolynomialTest, firstOrder) {
-	Polynomial p;
-	p.terms.emplace_back(2, 1);
-	ASSERT_DOUBLE_EQ( 0, p.y(0.0));
-	ASSERT_DOUBLE_EQ( 1, p.y(0.5));
-	ASSERT_DOUBLE_EQ( 2, p.y(1.0));
-	ASSERT_DOUBLE_EQ(-1, p.y(-0.5));
-	ASSERT_DOUBLE_EQ(-2, p.y(-1.0));
-}
+		requireEqual( 0, p.y(0.0));
+		requireEqual( 1, p.y(0.5));
+		requireEqual( 2, p.y(1.0));
+		requireEqual(-1, p.y(-0.5));
+		requireEqual(-2, p.y(-1.0));
+	}
 
-TEST(PolynomialTest, thirdOrder) {
-	Polynomial p;
-	p.terms.emplace_back(2,   1);
-	p.terms.emplace_back(1.5, 3);
+	SECTION("thirdOrder") {
+		dr::Polynomial p;
+		p.terms.emplace_back(2,   1);
+		p.terms.emplace_back(1.5, 3);
 
-	ASSERT_DOUBLE_EQ( 0.0000, p.y(0.0));
-	ASSERT_DOUBLE_EQ( 1.1875, p.y(0.5));
-	ASSERT_DOUBLE_EQ( 3.5000, p.y(1.0));
-	ASSERT_DOUBLE_EQ(-1.1875, p.y(-0.5));
-	ASSERT_DOUBLE_EQ(-3.5000, p.y(-1.0));
-}
+		requireEqual( 0.0000, p.y(0.0));
+		requireEqual( 1.1875, p.y(0.5));
+		requireEqual( 3.5000, p.y(1.0));
+		requireEqual(-1.1875, p.y(-0.5));
+		requireEqual(-3.5000, p.y(-1.0));
+	}
 
-TEST(PolynomialTest, fourthOrder) {
-	Polynomial p;
-	p.terms.emplace_back(1, 2);
-	p.terms.emplace_back(2, 4);
+	SECTION("fourthOrder") {
+		dr::Polynomial p;
+		p.terms.emplace_back(1, 2);
+		p.terms.emplace_back(2, 4);
 
-	ASSERT_DOUBLE_EQ( 0.000, p.y(0.0));
-	ASSERT_DOUBLE_EQ( 0.375, p.y(0.5));
-	ASSERT_DOUBLE_EQ( 3.000, p.y(1.0));
-	ASSERT_DOUBLE_EQ(36.000, p.y(2.0));
-	ASSERT_DOUBLE_EQ( 0.375, p.y(-0.5));
-	ASSERT_DOUBLE_EQ( 3.000, p.y(-1.0));
-	ASSERT_DOUBLE_EQ(36.000, p.y(-2.0));
-}
-
+		requireEqual( 0.000, p.y(0.0));
+		requireEqual( 0.375, p.y(0.5));
+		requireEqual( 3.000, p.y(1.0));
+		requireEqual(36.000, p.y(2.0));
+		requireEqual( 0.375, p.y(-0.5));
+		requireEqual( 3.000, p.y(-1.0));
+		requireEqual(36.000, p.y(-2.0));
+	}
 }

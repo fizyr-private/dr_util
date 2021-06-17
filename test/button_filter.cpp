@@ -1,70 +1,70 @@
+// This repository
 #include "button_filter.hpp"
 
-#include <gtest/gtest.h>
-
-int main(int argc, char ** argv) {
-	testing::InitGoogleTest(&argc, argv);
-	return RUN_ALL_TESTS();
-}
+// Catch
+#include <catch2/catch.hpp>
 
 namespace dr {
 
-TEST(ButtonFilterTest, filterAlwaysHigh) {
-	ButtonFilter bf(true, false);
+TEST_CASE("ButtonFilterTest") {
 
-	// pass through high signals always
-	EXPECT_FALSE(bf.filter(false));
-	EXPECT_TRUE(bf.filter(true));
-	EXPECT_TRUE(bf.filter(true));
-}
+	SECTION("filterAlwaysHigh") {
+		ButtonFilter bf(true, false);
 
-TEST(ButtonFilterTest, filterAlwaysLow) {
-	ButtonFilter bf(false, true);
+		// pass through high signals always
+		REQUIRE(bf.filter(false) == false);
+		REQUIRE(bf.filter(true)  == true);
+		REQUIRE(bf.filter(true)  == true);
+	}
 
-	// pass through low signals always
-	EXPECT_TRUE(bf.filter(false));
-	EXPECT_TRUE(bf.filter(true));
-	EXPECT_FALSE(bf.filter(true));
-}
+	SECTION("filterAlwaysLow") {
+		ButtonFilter bf(false, true);
 
-TEST(ButtonFilterTest, filterAlwaysHighAndLow) {
-	ButtonFilter bf(true, true);
+		// pass through low signals always
+		REQUIRE(bf.filter(false) == true);
+		REQUIRE(bf.filter(true)  == true);
+		REQUIRE(bf.filter(true)  == false);
+	}
 
-	// pass through any signal
-	EXPECT_TRUE(bf.filter(false));
-	EXPECT_TRUE(bf.filter(false));
-	EXPECT_TRUE(bf.filter(true));
-	EXPECT_TRUE(bf.filter(true));
-}
+	SECTION("filterAlwaysHighAndLow") {
+		ButtonFilter bf(true, true);
 
-TEST(ButtonFilterTest, filterRisingEdge) {
-	ButtonFilter bf;
+		// pass through any signal
+		REQUIRE(bf.filter(false) == true);
+		REQUIRE(bf.filter(false) == true);
+		REQUIRE(bf.filter(true)  == true);
+		REQUIRE(bf.filter(true)  == true);
+	}
 
-	// test rising edge
-	EXPECT_FALSE(bf.filter(false));
-	EXPECT_TRUE(bf.filter(true));
-}
+	SECTION("filterRisingEdge") {
+		ButtonFilter bf;
 
-TEST(ButtonFilterTest, filterFallingEdge) {
-	ButtonFilter bf;
+		// test rising edge
+		REQUIRE(bf.filter(false) == false);
+		REQUIRE(bf.filter(true)  == true);
+	}
 
-	// test falling edge
-	EXPECT_TRUE(bf.filter(true));
-	EXPECT_TRUE(bf.filter(false));
-}
+	SECTION("filterFallingEdge") {
+		ButtonFilter bf;
 
-TEST(ButtonFilterTest, filterMultiple) {
-	ButtonFilter bf;
+		// test falling edge
+		REQUIRE(bf.filter(true)  == true);
+		REQUIRE(bf.filter(false) == true);
+	}
 
-	// test multiple signals
-	EXPECT_TRUE(bf.filter(true));
-	EXPECT_FALSE(bf.filter(true));
+	SECTION("filterMultiple") {
+		ButtonFilter bf;
 
-	EXPECT_TRUE(bf.filter(false));
-	EXPECT_FALSE(bf.filter(false));
+		// test multiple signals
+		REQUIRE(bf.filter(true) == true);
+		REQUIRE(bf.filter(true) == false);
 
-	EXPECT_TRUE(bf.filter(true));
-	EXPECT_FALSE(bf.filter(true));
+		REQUIRE(bf.filter(false) == true);
+		REQUIRE(bf.filter(false) == false);
+
+		REQUIRE(bf.filter(true) == true);
+		REQUIRE(bf.filter(true) == false);
+	}
 }
 
 }
